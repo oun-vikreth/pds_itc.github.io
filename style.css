@@ -1,0 +1,10 @@
+.reveal pre {
+  font-size: 1.5rem !important;
+}
+
+.reveal .slide-logo {
+  height: 100px !important;
+  width: auto !important;
+  max-width: unset !important;
+  max-height: unset !important;
+}

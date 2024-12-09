@@ -1,84 +1,952 @@
 ---
-title: A title
-subtitle: A subtitle
-format: clean-revealjs
+title: Mini Project Presentation
+subtitle: "Course: Programming for Data Science"
+format: 
+  clean-revealjs:
+    navigation-mode: vertical
+    output-file: index.html
 html-math-method:
   method: mathjax
   url: "https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
 author:
-  - name: Your Name
-    orcid: 0000-0000-0000-0000
-    email: alias@email.com
-    affiliations: Your Institution
+  - name: NOR Phanit
+    email: e20200241
+  - name: PEAN Chhinger
+    email: e20201339
+  - name: PHAI Ratha
+    email: e20200190
+  - name: OUN Vikreth
+    email: e20200485
 date: last-modified
+logo: itc_ams.png
+css: style.css
 ---
 
-## Example slide
+# Problem 2: Using the SF Salaries Dataset from Kaggle! Just follow along and complete the tasks out lined below.
 
-### This is a subtitle
+## 
 
-Here we have some text that may run over several lines of the slide frame,
-depending on how long it is.
+1.  Import Pandas and read the Salaries.csv dataset.
 
-- first item 
-    - A sub item
-
-Next, we'll brief review some theme-specific components.
-
-- Note that _all_ of the standard Reveal.js
-[features](https://quarto.org/docs/presentations/revealjs/)
-can be used with this theme, even if we don't highlight them here.
-
-## Additional theme classes
-
-### Some extra things you can do with the clean theme
-
-Special classes for emphasis
-
-- `.alert` class for default emphasis, e.g. [important note]{.alert}.
-- `.fg` class for custom colour, e.g. [important note]{.fg style="--col: #e64173"}.
-- `.bg` class for custom background, e.g. [important note]{.bg style="--col: #e64173"}.
-
-Cross-references
-
-- `.button` class provides a Beamer-like button, e.g.
-[[Summary]{.button}](#sec-summary)
-
-## Want more?
-
-### See our longer demo slides
-
-We've deliberarely kept this template lean, to get you up and running as fast as
-possible.
-
-We provide a separate
-[demo template](https://github.com/grantmcdermott/quarto-revealjs-clean-demo),
-with more examples for integrating code, tables, figures, etc.
-
-  - See the live demo slides
-  [here](https://grantmcdermott.com/quarto-revealjs-clean-demo/template.html).
-
-## Summary {#sec-summary}
-
-### A minimalist and elegant presentation theme
-
-The Quarto reveal.js clean theme aims to be a minimalist and elegant presention
-theme. Here are some options to get you started:
-
-Add the theme to an existing project.
-
-```{.bash}
-quarto install extension grantmcdermott/quarto-revealjs-clean
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 ```
 
-... or, create a new project using this slide deck as a lean template.
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data = pd.read_csv('datasets/Salaries.csv')
+```
+## 
 
-```{.bash}
-quarto use template grantmcdermott/quarto-revealjs-clean
+2. Display the first few rows of the DataFrame and check the DataFrame’s information.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# check the unique values in the 'Notes' column
+data.head(2)
+```
+## 
+
+3. Calculate the average Base Pay of the employees and find the highest Overtime Pay.
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data['BasePay'] = pd.to_numeric(data['BasePay'], errors='coerce')
+print(f"The mean of BasePay is: {data['BasePay'].mean()}")
 ```
 
-... or, create a new project using the demo slide deck as a full template.
+4. Identify the job title of the employee named JOSEPH DRISCOLL.
 
-```{.bash}
-quarto use template grantmcdermott/quarto-revealjs-clean-demo
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data.query('EmployeeName == "JOSEPH DRISCOLL"')["JobTitle"]
 ```
+5. Determine JOSEPH DRISCOLL’s total pay, including benefits
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data.query('EmployeeName == "JOSEPH DRISCOLL"')["TotalPayBenefits"]
+```
+
+## 
+
+6. Identify the highest paid employee based on total pay and benefits.
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data[data['TotalPayBenefits'] == data['TotalPayBenefits'].max()]
+```
+7. Determine the lowest paid employee and note any anomalies in their pay
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data[data['TotalPayBenefits'] == data['TotalPayBenefits'].min()]
+```
+##
+
+8. Calculate the average Base Pay per year from 2011 to 2014
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data.groupby('Year')['BasePay'].mean()
+```
+9. Count the number of unique job titles in the dataset.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data['JobTitle'].nunique()
+```
+## 
+
+10. Identify the top 5 most common job titles.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data['JobTitle'].value_counts().head(5)
+```
+11. Count how many job titles were held by only one person in 2013
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+sum(data[data['Year'] == 2013]['JobTitle'].value_counts() == 1)
+```
+12. Count how many employees have ‘Chief’ in their job title.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+sum(data['JobTitle'].apply(lambda x: 'chief' in x.lower()))
+```
+##
+
+13. Analyze the correlation between the length of job titles and total pay benefits.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data['title_len'] = data['JobTitle'].apply(len)
+data[['title_len', 'TotalPayBenefits']].corr()
+```
+
+# Problem 3: Explanatory Data Analysis and Seaborn Visualization (Olympic Games)
+
+## 
+
+1. Data import
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+summer_df = pd.read_csv('datasets/3-summer.csv')
+summer_df["Season"] = "Summer"
+summer_df.head(3)
+```
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+winter_df = pd.read_csv('datasets/3-winter.csv')
+winter_df["Season"] = "Winter"
+winter_df.head(3)
+```
+## 
+
+2. Merging and Concatenating summer & winter.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+olympics_df = pd.concat([summer_df, winter_df], ignore_index=True)
+olympics_df.sample(5)
+```
+##
+
+3. Data Cleaning
+
+::: {.panel-tabset}
+
+### Checking datatype
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# checking for missing values
+olympics_df.info()
+```
+
+### Counting missing value
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# checking for missing values
+olympics_df.isnull().sum()
+```
+
+:::
+
+
+## 
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# list the row with missing country values
+olympics_df[olympics_df.isnull().any(axis=1)]
+```
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+olympics_df.query('Athlete == "KUDUKHOV, Besik"')
+```
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# fill "RUS" for athlete "KUDUKHOV, Besik" with id 31110
+olympics_df.loc[olympics_df['Athlete'] == "KUDUKHOV, Besik", 'Country'] = "RUS"
+```
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+olympics_df.sample(3)
+```
+
+##
+
+4. What Are The Most Successful Countries of All Times?
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+medals = olympics_df.groupby(['Country', 'Medal']).size().unstack()
+medals = medals.sort_values(by=['Gold', 'Silver', 'Bronze'], ascending=False)
+medals = medals.fillna(0)
+medals = medals.astype(int)
+medals['Total'] = medals.sum(axis=1)
+medals = medals.sort_values(by='Total', ascending=False)
+medals.head(5)
+```
+##
+
+5. DoGDP, Population and Politics Matter?
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+country_df = pd.read_csv('datasets/3-dictionary.csv')
+country_df.rename(columns={'Country': 'CountryName'}, inplace=True)
+country_df.rename(columns={'Code': 'Country'}, inplace=True)
+country_df.reset_index(drop=True, inplace=True)
+country_df.head(5)
+```
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# Drop the index in medals if it's a duplicate
+medals = medals.reset_index(drop=False)
+```
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# Merge the two DataFrames on the 'Country' column
+merged_df = pd.merge(country_df, medals, on='Country')
+merged_df = merged_df.dropna()
+merged_df.head()
+```
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# Calculate the correlation between the number of medals and the population, GDP per Capita
+correlation = merged_df[['Total', 'Population', 'GDP per Capita']].corr()
+plt.figure(figsize=(8, 4))
+sns.heatmap(correlation, annot=True, cmap='coolwarm', linewidths=0.5)
+plt.title('Correlation Matrix Heatmap')
+plt.show()
+```
+
+##
+
+6. Statistical Analysis and Hypothesis Testing with scipy.
+
+::: {.panel-tabset}
+
+### GDP per Capita
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+import pandas as pd
+import scipy.stats as stats
+gold_winners = merged_df[merged_df['Gold'] > 0]['GDP per Capita']
+no_gold_winners = merged_df[merged_df['Gold'] == 0]['GDP per Capita']
+t_stat, p_value = stats.ttest_ind(gold_winners, no_gold_winners, equal_var=False)  # Welch's t-test
+alpha = 0.05
+print("T-statistic:", t_stat, "P-value:", p_value)
+if p_value < alpha:
+    print("Reject the null hypothesis: There is a significant difference between the GDP per Capita.")
+else:
+    print("Fail to reject the null hypothesis: No significant difference between the GDP per Capita.")
+```
+
+### Population
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+gold_winners = merged_df[merged_df['Gold'] > 0]['Population']
+no_gold_winners = merged_df[merged_df['Gold'] == 0]['Population']
+t_stat, p_value = stats.ttest_ind(gold_winners, no_gold_winners, equal_var=False)  # Welch's t-test
+alpha = 0.05
+print("T-statistic:", t_stat, "P-value:", p_value)
+if p_value < alpha:
+    print("Reject the null hypothesis: There is a significant difference between the Population.")
+else:
+    print("Fail to reject the null hypothesis: No significant difference between the Population.")
+```
+:::
+
+##
+
+7. Aggregating and Ranking
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#  Aggregating and Ranking.
+# Calculate the total number of medals for each country
+total_medals = merged_df[['CountryName', 'Total']].sort_values(by='Total', ascending=False)
+total_medals = total_medals.reset_index(drop=True)
+
+# Rank the countries by the total number of medals
+total_medals['Rank'] = total_medals['Total'].rank(ascending=False, method='min').astype(int)
+total_medals.head(10)
+```
+
+##
+
+8. SummerGamesVs. Winter Games(Does Geographical Location Matter?)
+
+::: {.panel-tabset}
+
+### Summer
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# count the number of medals for each country in the summer
+summer_medals = summer_df['Country'].value_counts()
+summer_medals = summer_medals.reset_index()
+summer_medals.columns = ['Country', 'Summer']
+summer_medals.head()
+```
+
+### Winter
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# count the number of medals for each country in the Winter
+winter_medals = winter_df['Country'].value_counts()
+winter_medals = winter_medals.reset_index()
+winter_medals.columns = ['Country', 'Winter']
+winter_medals.head()
+```
+
+:::
+
+
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+season_country_counts = olympics_df.groupby(['Season', 'Country']).size().reset_index(name='Count')
+
+# Pivot data for comparison
+season_pivot = season_country_counts.pivot(index='Country', columns='Season', values='Count').fillna(0)
+
+# Add a total column to sort by overall medal count
+season_pivot['Total'] = season_pivot.sum(axis=1)
+
+# Sort by total medal count and select the top 10
+top_10_countries = season_pivot.sort_values('Total', ascending=False).head(10)
+
+# Drop the 'Total' column for visualization purposes
+top_10_countries = top_10_countries.drop(columns='Total')
+
+# Prepare data for side-by-side bar plot
+countries = top_10_countries.index
+x = np.arange(len(countries))  # the label locations
+width = 0.35  # the width of the bars
+
+# Plot bars for Summer and Winter
+fig, ax = plt.subplots(figsize=(12, 6))
+ax.bar(x - width/2, top_10_countries['Summer'], width, label='Summer', color='lightcoral')
+ax.bar(x + width/2, top_10_countries['Winter'], width, label='Winter', color='skyblue')
+
+# Add labels, title, and legend
+ax.set_xlabel('Country')
+ax.set_ylabel('Medal Count')
+ax.set_title('Top 10 Countries by Medal Count (Summer vs Winter Olympics)')
+ax.set_xticks(x)
+ax.set_xticklabels(countries, rotation=45)
+ax.legend()
+
+plt.tight_layout()
+plt.show()
+```
+#  Problem 4: Data Preprocessing & Feature Engineering for Machine Learning
+
+##
+
+1. Data import
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data = pd.read_csv('datasets/4-housing.csv')
+data.head(3)
+```
+
+##
+
+2. Data Cleaning and Creating Additional Features.
+
+::: {.panel-tabset}
+
+### Dropping null value
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data.isnull().sum()
+```
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data.dropna(inplace=True)
+```
+### Create new features
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+data['avg_population_per_household'] = data['population'] / data['households']
+data['avg_income_per_household'] = data['median_income'] / data['households']
+data[['avg_population_per_household', 'avg_income_per_household']].head(5)
+```
+:::
+
+##
+
+3. Which Factors Influence House Prices
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+columns_to_describe = [
+    'housing_median_age', 'total_rooms', 'total_bedrooms',
+    'population', 'households', 'median_income', 'median_house_value'
+]
+correlation_matrix = data[columns_to_describe].corr()
+correlation_matrix['median_house_value'].sort_values(ascending=False).plot(kind='bar')
+```
+
+
+##
+
+4. Advanced Exploratory Data Analysis With Seaborn.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# Explore the column ocean_proximity
+ocean_values = data["ocean_proximity"].value_counts()
+ax = sns.barplot(x=ocean_values.index, y=ocean_values.values, palette='viridis', alpha=0.8, hue=ocean_values.index)
+total = ocean_values.sum()
+for p in ax.patches:
+    percentage = f'{100 * p.get_height() / total:.2f}%'
+    x = p.get_x() + p.get_width() / 2 - 0.05
+    y = p.get_height() + 50
+    ax.annotate(percentage, (x, y), ha='center')
+plt.show()
+```
+
+##
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+fig, axes = plt.subplots(nrows=3, ncols=3, figsize=(10, 6))
+axes = axes.flatten()
+
+for i, col in enumerate(columns_to_describe):
+    sns.histplot(data[col], bins=25, ax=axes[i])
+    axes[i].set_title(col)
+
+plt.tight_layout()
+plt.show()
+```
+
+##
+
+::: {.panel-tabset}
+
+### Scatter plot
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# check scatter plot between median_income and median_house_value
+plt.figure(figsize=(8,4))
+plt.scatter(data["median_income"],data["median_house_value"], alpha=0.2)
+plt.xlabel('Median income')
+plt.ylabel('Median house value')
+plt.title('Linear correlation Median income/Median House value')
+```
+
+
+### Histogram
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+## Try to make median_income into bins
+income_bins = pd.cut(data["median_income"],
+                     bins=[0,1.5,3,4.5,6,np.inf],
+                     labels=["0 - 1.5","1.5 - 3","3 - 4.5","4.5 - 6"," > 6 "])
+sns.countplot(x = income_bins);
+```
+### House price bins
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+house_value_bins = pd.cut(x=data["median_house_value"],
+                          bins=(-np.inf, 100000, 200000, 300000, 400000, 500000, np.inf),
+                                labels=('0-100k', '100k-200k', '300k-400k', '400k-500k', '500k-600k', '600k<l') )
+## countpLot for the above chunks 
+plt.figure(figsize=(10,6)) 
+sns.countplot(x=house_value_bins) 
+plt.title('CountPlot of House Value Bins in Dataset', fontsize=14, c='k') 
+plt.xlabel('House Value Bins', fontsize=14, c='k') 
+plt.ylabel('counts', fontsize=14,c='k') 
+plt.show() 
+```
+### Map
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+plt.figure(figsize=(8,3));
+data.plot(kind="scatter", x="longitude", y="latitude", alpha=0.4,
+        s=data["population"]/100, label="population", figsize=(10,4),
+        c="median_house_value", cmap=plt.get_cmap("jet"),colorbar=True,
+    );
+plt.legend();
+```
+:::
+
+##
+
+5. Feature Engineering.
+
+::: {.panel-tabset}
+
+### Feature creating
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# data = pd.get_dummies(data, columns=['ocean_proximity', 'age_group'], drop_first=True)
+data['income_bin'] = pd.cut(data['median_income'], bins=[0, 2, 4, 6, 8, 10], labels=['very low', 'low', 'medium', 'high', 'very high'])
+data[['median_income', 'income_bin']].sample(5)
+```
+
+### Bar plot of `incomebin`
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+plt.figure(figsize=(8, 4))
+sns.countplot(data['income_bin'])
+plt.title('Income Bin Distribution')
+plt.show()
+```
+
+:::
+
+
+##
+
+6. Splitting The Data Into Train And Test Set.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+from sklearn.model_selection import train_test_split
+
+df=data[['housing_median_age',
+       'total_rooms', 'total_bedrooms', 'population', 'households',
+       'median_income','median_house_value']]
+X = df[['housing_median_age',
+       'total_rooms', 'total_bedrooms', 'population', 'households',
+       'median_income']]
+y= df['median_house_value' ]
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train.shape, X_test.shape, y_train.shape, y_test.shape
+```
+
+
+##
+
+7. Training the ML Model (RandomForest).
+
+
+::: {.panel-tabset}
+
+### Features Scaling
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+from sklearn.preprocessing import RobustScaler
+ro_scaler=RobustScaler()
+x_train=ro_scaler.fit_transform(X_train)
+x_test=ro_scaler.fit_transform(X_test)
+```
+
+### VIF
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+from statsmodels.stats.outliers_influence import variance_inflation_factor
+vif_x=X.copy()
+# VIF dataframe
+vif_data = pd.DataFrame()
+vif_data["feature"] = vif_x.columns
+  
+# calculating VIF for each feature
+vif_data["VIF"] = [variance_inflation_factor(vif_x.values, i)
+                          for i in range(len(vif_x.columns))]
+  
+print(vif_data)
+```
+
+### Training
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+# 7. Training the ML Model (RandomForest).
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import mean_squared_error
+
+model = RandomForestRegressor(n_estimators=25, max_depth=5)
+model.fit(X_train, y_train)
+```
+:::
+
+## 
+
+8. Evaluating the Model on Test Set.
+
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+y_pred = model.predict(X_test)
+mse = mean_squared_error(y_test, y_pred)
+rmse = np.sqrt(mse)
+
+print(f'Mean Squared Error: {mse}')
+print(f'Root Mean Squared Error: {rmse}')
+```
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+from sklearn.metrics import explained_variance_score
+
+result=explained_variance_score(y_test,y_pred,multioutput='uniform_average')
+print(f'Explained Variance Score: {result}')
+```
+
+##
+
+ 9. Find Feature Importance.
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+X = df[['housing_median_age',
+       'total_rooms', 'total_bedrooms', 'population', 'households',
+       'median_income']]
+feature_importances = model.feature_importances_
+feature_importances_df = pd.DataFrame({
+    'Feature': X.columns,
+    'Importance': feature_importances
+}).sort_values(by='Importance', ascending=False)
+
+feature_importances_df
+```
+
+# Problem 5: Data Analysis with Finance Stock
+
+##
+
+1. Data import
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+```
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+df = pd.read_csv('datasets/5-dji.csv')
+df['Date'] = pd.to_datetime(df['Date'])
+df.head(3)
+```
+##
+
+2. Data Visualization & Return.
+
+::: {.panel-tabset}
+
+### Volume vs Date
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], df['Close'], label='Close Price')
+plt.xlabel('Date')
+plt.ylabel('Close Price')
+plt.title('DJI Close Price Over Time')
+plt.legend()
+plt.show()
+```
+
+### Close price vs Date
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# plot volume vs date
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], df['Volume'])
+plt.title('Volume vs Date')
+plt.xlabel('Date')
+plt.ylabel('Volume')
+plt.show()
+```
+
+### Return vs Date
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+df['Returns'] = df['Close'].pct_change()
+# Plot the returns with Date
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], df['Returns'], label='Returns', color='red')
+plt.xlabel('Date')
+plt.ylabel('Returns')
+plt.title('DJI Returns Over Time')
+plt.legend()
+plt.show()
+```
+:::
+
+##
+
+3. Backtesting a Simple Momentum Strategy.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+df['Position'] = np.where(df['Returns'] > 0, 1, -1)
+
+df['Strategy_Returns'] = df['Position'].shift(1) * df['Returns']
+
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], (1 + df['Strategy_Returns']).cumprod(), label='Momentum Strategy')
+plt.plot(df['Date'], (1 + df['Returns']).cumprod(), label='Buy and Hold Strategy')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns')
+plt.title('Momentum Strategy vs Buy and Hold Strategy')
+plt.legend()
+plt.show()
+```
+
+##
+
+4. More Complex Strategies & Backtesting Vs. Fitting.
+
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# Define the short-term and long-term moving averages
+short_window = 40
+long_window = 100
+
+# Calculate the moving averages
+df['Short_MA'] = df['Close'].rolling(window=short_window, min_periods=1).mean()
+df['Long_MA'] = df['Close'].rolling(window=long_window, min_periods=1).mean()
+
+# Generate signals
+df['Signal'] = 0
+df['Signal'][short_window:] = np.where(df['Short_MA'][short_window:] > df['Long_MA'][short_window:], 1, -1)
+
+# Calculate strategy returns
+df['Strategy_Returns_MA'] = df['Signal'].shift(1) * df['Returns']
+
+# Plot the strategy performance
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], (1 + df['Strategy_Returns_MA']).cumprod(), label='Moving Average Crossover Strategy')
+plt.plot(df['Date'], (1 + df['Returns']).cumprod(), label='Buy and Hold Strategy')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns')
+plt.title('Moving Average Crossover Strategy vs Buy and Hold Strategy')
+plt.legend()
+plt.show()
+```
+##
+
+5. Simple Moving Average (SMA).
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# Calculate the Simple Moving Average (SMA)
+df['SMA'] = df['Close'].rolling(window=short_window, min_periods=1).mean()
+
+# Plot the SMA with the Close price
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], df['Close'], label='Close Price')
+plt.plot(df['Date'], df['SMA'], label='Simple Moving Average (SMA)', color='orange')
+plt.xlabel('Date')
+plt.ylabel('Price')
+plt.title('Simple Moving Average (SMA) vs Close Price')
+plt.legend()
+plt.show()
+``` 
+##
+
+6. Backtesting Simple Moving Average
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# Generate trading signals based on SMA
+df['SMA_Signal'] = 0
+df['SMA_Signal'][short_window:] = np.where(df['Close'][short_window:] > df['SMA'][short_window:], 1, -1)
+
+# Calculate strategy returns
+df['SMA_Strategy_Returns'] = df['SMA_Signal'].shift(1) * df['Returns']
+
+# Plot the strategy performance
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], (1 + df['SMA_Strategy_Returns']).cumprod(), label='SMA Strategy')
+plt.plot(df['Date'], (1 + df['Returns']).cumprod(), label='Buy and Hold Strategy')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns')
+plt.title('SMA Strategy vs Buy and Hold Strategy')
+plt.legend()
+plt.show()
+``` 
+
+##
+
+7. Backtesting the Perfect Strategy In Case You Can Predict The Future.
+ 
+```{python}
+#| echo: true
+#| code-summary: "expand for full code"
+#| code-fold: true
+# Generate trading signals based on future returns
+df['Perfect_Signal'] = np.where(df['Returns'].shift(-1) > 0, 1, -1)
+
+# Calculate strategy returns
+df['Perfect_Strategy_Returns'] = df['Perfect_Signal'] * df['Returns']
+
+# Plot the strategy performance
+plt.figure(figsize=(12, 4))
+plt.plot(df['Date'], (1 + df['Perfect_Strategy_Returns']).cumprod(), label='Perfect Strategy')
+plt.plot(df['Date'], (1 + df['Returns']).cumprod(), label='Buy and Hold Strategy')
+plt.xlabel('Date')
+plt.ylabel('Cumulative Returns')
+plt.title('Perfect Strategy vs Buy and Hold Strategy')
+plt.legend()
+plt.show()
+```  
+ 
+
+# **Thank You For Your Attention!**
+
